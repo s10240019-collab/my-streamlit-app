@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from scipy.stats import pdist
+from scipy.spatial.distance import pdist
 
 # =====================================================================
 # 1. 數學模型核心：Heston 模型蒙地卡羅模擬
