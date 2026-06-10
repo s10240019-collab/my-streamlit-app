@@ -2,7 +2,10 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from scipy.spatial.distance import pdist
+from scipy.stats import pdist
+
+# 🌟 從獨立檔案引入 100 檔股票字典
+from stocks import STOCK_DICT
 
 # =====================================================================
 # 1. 數學模型核心：Heston 模型蒙地卡羅模擬
@@ -70,48 +73,9 @@ st.title("📊 智慧量化選股與極端風險預測系統")
 st.caption("基於進階蒙地卡羅模擬（Heston 模型）與 $W_\\infty$ 距離之動態分析平台")
 
 # --- 側邊欄：股票選擇與參數設定 ---
-# =====================================================================
-# 3. Streamlit 網頁 UI 設計
-# =====================================================================
-st.set_page_config(page_title="智慧量化選股與極端風險預測系統", layout="wide")
-
-st.title("📊 智慧量化選股與極端風險預測系統")
-st.caption("基於進階蒙地卡羅模擬（Heston 模型）與 $W_\\infty$ 距離之動態分析平台")
-
-# --- 側邊欄：股票選擇與參數設定 ---
-st.sidebar.header("📁 數據篩選與配置")
-
-# 替換為真實台灣百大成分股名稱與代號對照表
-stock_dict = {
-    "2330 台積電": "2330.TW",
-    "2317 鴻海": "2317.TW",
-    "2454 聯發科": "2454.TW",
-    "2881 富邦金": "2881.TW",
-    "2308 台達電": "2308.TW",
-    "2882 國泰金": "2882.TW",
-    "2382 廣達": "2382.TW",
-    "3008 大立光": "3008.TW",
-    "2603 長榮": "2603.TW",
-    "3231 緯創": "3231.TW",
-    "2357 華碩": "2357.TW",
-    "2891 中信金": "2891.TW",
-    "1301 台塑": "1301.TW",
-    "2002 中鋼": "2002.TW",
-    "2324 仁寶": "2324.TW",
-    "2379 瑞昱": "2379.TW",
-    "2886 兆豐金": "2886.TW",
-    "5871 中租-KY": "5871.TW",
-    "2609 陽明": "2609.TW",
-    "2303 聯電": "2303.TW"
-    # 可在此處繼續自由追加其他中型 100 的成分股...
-}
-
-# 讓使用者在下拉選單看到「公司名稱」，但後端可以同時拿到名稱與代號
-selected_stock_name = st.sidebar.selectbox("請選取目標觀測標的：", list(stock_dict.keys()))
-selected_stock_code = stock_dict[selected_stock_name] # 拿到對應的 Yahoo Finance 代號（如 2330.TW）
-
-st.sidebar.subheader("⚙️ Heston 模型校準參數")
-# (以下原本的 slider 參數設定保持不變...)
+# 讓使用者在下拉選單看到中文名稱
+selected_stock_name = st.sidebar.selectbox("請選取目標觀測標的：", list(STOCK_DICT.keys()))
+selected_stock_code = STOCK_DICT[selected_stock_name]
 
 # 模擬 100 檔股票清單
 stock_list = [f"股票 {str(i).zfill(3)}.TW" for i in range(1, 101)]
