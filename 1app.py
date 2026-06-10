@@ -2,7 +2,6 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from scipy.stats import pdist
 
 # 🌟 從獨立檔案引入 100 檔股票字典
 from stocks import STOCK_DICT
