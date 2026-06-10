@@ -11,7 +11,7 @@ if ticker:
     
     # 檢查抓出來的資料表是不是空的
     if df.empty:
-        st.error(#c62828)["找不到該股票代號，請重新輸入！"]
+        st.error("找不到該股票代號，請重新輸入！")
     else:
         # 確保有 'Close' 欄位才畫圖
         if 'Close' in df.columns:
