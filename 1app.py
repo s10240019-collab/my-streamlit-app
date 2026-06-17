@@ -5,38 +5,43 @@ import matplotlib.pyplot as plt
 import yfinance as yf
 from scipy.optimize import minimize
 import os
+import urllib.request
 import matplotlib.font_manager as fm
 
 # =====================================================================
-# 🌟 決賽必勝：NotoSansCJKtc-Black.otf 實體字型硬核注入（含全圖表覆蓋）
+# 🌟 決賽殺手鐧：雲端即時動態下載全新字型（徹底解決 0x55 檔案損壞問題）
 # =====================================================================
-font_path = "NotoSansCJKtc-Black.otf"
+# 定義下載到雲端伺服器暫存區的檔名
+font_path = "CloudNotoSansTC.ttf"
 
-if os.path.exists(font_path):
+# 如果伺服器本地還沒有這個字型，直接線上抓取 Google 官方最輕量、完好的中文字型檔
+if not os.path.exists(font_path):
     try:
-        # 1. 註冊字型到 Matplotlib 系統
+        with st.spinner("🔄 正在為雲端圖表安全下載繁體中文字型..."):
+            url = "https://github.com/google/fonts/raw/main/ofl/notosanstc/NotoSansTC%5Bwght%5D.ttf"
+            urllib.request.urlretrieve(url, font_path)
+    except Exception:
+        pass
+
+# 執行實體安全注入
+font_available = False
+if os.path.exists(font_path) and os.path.getsize(font_path) > 0:
+    try:
         fm.fontManager.addfont(font_path)
         font_name = fm.FontProperties(fname=font_path).get_name()
         
-        # 2. 全局強制覆蓋所有 Matplotlib 的預設字型群
+        # 全局強制綁定
         plt.rcParams['font.family'] = font_name
         plt.rcParams['font.sans-serif'] = [font_name] + plt.rcParams['font.sans-serif']
-        
-        # 3. 額外強制覆蓋細部元件，防止圓餅圖、軸標籤漏勾
-        plt.rcParams['mathtext.fontset'] = 'custom'
-        
-        # 建立一個全域字型物件供後續傳參（相容你之前的程式碼）
         my_font = fm.FontProperties(fname=font_path)
         font_available = True
-        st.sidebar.success(f"✅ 中文核心字型已成功硬核注入：{font_name}")
+        st.sidebar.success("✅ 雲端繁體中文字型下載並注入成功！")
     except Exception as e:
         plt.rcParams['font.family'] = 'sans-serif'
-        font_available = False
-        st.sidebar.warning(f"⚠️ 字型載入微調中：{e}")
+        st.sidebar.warning(f"⚠️ 字型套用備用方案：{e}")
 else:
     plt.rcParams['font.family'] = 'sans-serif'
-    font_available = False
-    st.sidebar.warning("⚠️ 沒找到 NotoSansCJKtc-Black.otf，請確認 GitHub 根目錄檔名。")
+    st.sidebar.warning("⚠️ 無法下載雲端字型，使用預設無襯線字型。")
 
 # 強制修正負號問題
 plt.rcParams['axes.unicode_minus'] = False
