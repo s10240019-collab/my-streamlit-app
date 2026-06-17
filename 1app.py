@@ -4,24 +4,27 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import yfinance as yf
 from scipy.optimize import minimize
-
-# =====================================================================
-# 🌟 終極解決 Streamlit Cloud Linux 伺服器中文豆腐字/方塊字問題
-# =====================================================================
+import os
 import matplotlib.font_manager as fm
 
-# 1. 優先尋找系統內建的微軟正黑體、儷黑體或 Linux 通用的文泉驛微米黑
-available_fonts = [f.name for f in fm.fontManager.ttflist]
-font_candidates = ['Microsoft JhengHei', 'Heiti TC', 'Apple LiGothic', 'WenQuanYi Micro Hei', 'sans-serif']
+# =====================================================================
+# 🌟 終極地心引力版：直接讀取 GitHub 專案內的中文字型檔
+# =====================================================================
+font_path = "NotoSansTC.ttf"
 
-chosen_font = 'sans-serif'
-for font in font_candidates:
-    if font in available_fonts:
-        chosen_font = font
-        break
+if os.path.exists(font_path):
+    # 註冊新字型到 Matplotlib 的字型庫中
+    fm.fontManager.addfont(font_path)
+    # 取得該字型檔的真實名稱
+    font_name = fm.FontProperties(fname=font_path).get_name()
+    # 全局強制綁定
+    plt.rcParams['font.family'] = font_name
+    # 同時設定專門給圓餅圖、標題等文字組使用的全域字型
+    plt.rcParams['font.sans-serif'] = [font_name]
+else:
+    # 備用防呆機制
+    plt.rcParams['font.family'] = 'sans-serif'
 
-# 2. 強制綁定字型與負號顯示
-plt.rcParams['font.family'] = chosen_font
 plt.rcParams['axes.unicode_minus'] = False
 
 # =====================================================================
