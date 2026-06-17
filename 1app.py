@@ -5,8 +5,23 @@ import matplotlib.pyplot as plt
 import yfinance as yf
 from scipy.optimize import minimize
 
-# 解決 Streamlit Cloud 雲端 Linux 伺服器中文顯示變方塊的問題
-plt.rcParams['font.sans-serif'] = ['DejaVu Sans', 'Arial', 'Microsoft JhengHei'] 
+# =====================================================================
+# 🌟 終極解決 Streamlit Cloud Linux 伺服器中文豆腐字/方塊字問題
+# =====================================================================
+import matplotlib.font_manager as fm
+
+# 1. 優先尋找系統內建的微軟正黑體、儷黑體或 Linux 通用的文泉驛微米黑
+available_fonts = [f.name for f in fm.fontManager.ttflist]
+font_candidates = ['Microsoft JhengHei', 'Heiti TC', 'Apple LiGothic', 'WenQuanYi Micro Hei', 'sans-serif']
+
+chosen_font = 'sans-serif'
+for font in font_candidates:
+    if font in available_fonts:
+        chosen_font = font
+        break
+
+# 2. 強制綁定字型與負號顯示
+plt.rcParams['font.family'] = chosen_font
 plt.rcParams['axes.unicode_minus'] = False
 
 # =====================================================================
