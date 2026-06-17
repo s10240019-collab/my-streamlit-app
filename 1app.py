@@ -8,10 +8,10 @@ import os
 import matplotlib.font_manager as fm
 
 # =====================================================================
-# 🌟 修正版：精準讀取 NotoSansTC.ttf.otf 字型檔
+# 🌟 修正版：精準讀取 NotoSansCJKtc-Black.otf 字型檔
 # =====================================================================
 # 直接對齊你在 GitHub 上真實上傳的檔案名稱
-font_path = "NotoSansTC.ttf.otf"
+font_path = "NotoSansCJKtc-Black.otf"
 
 if os.path.exists(font_path):
     try:
@@ -30,7 +30,7 @@ if os.path.exists(font_path):
 else:
     # 萬一檔案沒傳好，至少不要讓網頁崩潰
     plt.rcParams['font.family'] = 'sans-serif'
-    st.sidebar.warning("⚠️ 找不到 NotoSansTC.ttf.otf 檔案，請檢查 GitHub 根目錄。")
+    st.sidebar.warning("⚠️ 找不到 NotoSansCJKtc-Black.otf 檔案，請檢查 GitHub 根目錄。")
 
 # 固定負號顯示，避免負號也變方塊
 plt.rcParams['axes.unicode_minus'] = False
