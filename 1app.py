@@ -276,12 +276,20 @@ elif mode == "Mean-CVaR 智慧資產配置":
             pool_codes = [STOCK_DICT[name] for name in selected_pool]
             data = yf.download(pool_codes, start="2023-01-01")['Close']
             
-            pool_returns = data.pct_change().dropna()
-            mean_returns = pool_returns.mean().values * 252
-            hist_returns_matrix = pool_returns.values
+            # 🌟 核心防錯：計算收益率後，必須同時使用 axis=0 踢除任何一檔股票有缺失值的「那一天」
+            # 同時多加上一個 .dropna(how='any')，保證矩陣內部絕對沒有 NaN 空值
+            pool_returns = data.pct_change().dropna(how='any')
             
-            optimal_weights = optimize_mean_cvar(mean_returns, hist_returns_matrix, target_return_input)
-            
+            # 保險防呆：如果踢完空值後發現資料不夠，拋出警告而不是讓網頁崩潰
+            if len(pool_returns) < 10:
+                st.error("⚠️ 選取的標的歷史交易資料交叉重疊天數不足，請嘗試更換其他股票組合。")
+            else:
+                mean_returns = pool_returns.mean().values * 252
+                hist_returns_matrix = pool_returns.values
+                
+                # 執行優化算法
+                optimal_weights = optimize_mean_cvar(mean_returns, hist_returns_matrix, target_return_input)
+                      
         col1, col2 = st.columns(2)
         with col1:
             st.subheader("🎯 智慧配置最佳權重")
