@@ -8,23 +8,31 @@ import os
 import matplotlib.font_manager as fm
 
 # =====================================================================
-# 🌟 終極地心引力版：直接讀取 GitHub 專案內的中文字型檔
+# 🌟 修正版：精準讀取 NotoSansTC.ttf.otf 字型檔
 # =====================================================================
-font_path = "NotoSansTC.ttf"
+# 直接對齊你在 GitHub 上真實上傳的檔案名稱
+font_path = "NotoSansTC.ttf.otf"
 
 if os.path.exists(font_path):
-    # 註冊新字型到 Matplotlib 的字型庫中
-    fm.fontManager.addfont(font_path)
-    # 取得該字型檔的真實名稱
-    font_name = fm.FontProperties(fname=font_path).get_name()
-    # 全局強制綁定
-    plt.rcParams['font.family'] = font_name
-    # 同時設定專門給圓餅圖、標題等文字組使用的全域字型
-    plt.rcParams['font.sans-serif'] = [font_name]
+    try:
+        # 強制註冊你的實體字型檔
+        fm.fontManager.addfont(font_path)
+        font_name = fm.FontProperties(fname=font_path).get_name()
+        
+        # 全局套用字型
+        plt.rcParams['font.family'] = font_name
+        plt.rcParams['font.sans-serif'] = [font_name]
+        st.sidebar.success("✅ 成功載入自訂中文字型檔！")
+    except Exception as e:
+        # 如果因為副檔名多重導致底層解析失敗的終極防呆
+        plt.rcParams['font.family'] = 'sans-serif'
+        st.sidebar.warning(f"⚠️ 字型解析出錯，已啟動系統防呆：{e}")
 else:
-    # 備用防呆機制
+    # 萬一檔案沒傳好，至少不要讓網頁崩潰
     plt.rcParams['font.family'] = 'sans-serif'
+    st.sidebar.warning("⚠️ 找不到 NotoSansTC.ttf.otf 檔案，請檢查 GitHub 根目錄。")
 
+# 固定負號顯示，避免負號也變方塊
 plt.rcParams['axes.unicode_minus'] = False
 
 # =====================================================================
