@@ -4,32 +4,42 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import yfinance as yf
 from scipy.optimize import minimize
+import os
 import matplotlib.font_manager as fm
 
 # =====================================================================
-# 🌟 決賽終極方案：免字型檔！直接向系統嗅探 Linux 與雲端最相容字型
+# 🌟 決賽必勝：NotoSansCJKtc-Black.otf 實體字型硬核注入（含全圖表覆蓋）
 # =====================================================================
-# 尋找現存 Linux 容器中一定能識別或退場的無襯線字型族群
-plt.rcParams['font.family'] = 'sans-serif'
+font_path = "NotoSansCJKtc-Black.otf"
 
-# 收集 Linux 系統與 Streamlit 容器中常見的中文字型後備清單
-available_fonts = [f.name for f in fm.fontManager.ttflist]
-font_candidates = ['DejaVu Sans', 'Liberation Sans', 'Ubuntu', 'Arial', 'Heiti TC', 'sans-serif']
+if os.path.exists(font_path):
+    try:
+        # 1. 註冊字型到 Matplotlib 系統
+        fm.fontManager.addfont(font_path)
+        font_name = fm.FontProperties(fname=font_path).get_name()
+        
+        # 2. 全局強制覆蓋所有 Matplotlib 的預設字型群
+        plt.rcParams['font.family'] = font_name
+        plt.rcParams['font.sans-serif'] = [font_name] + plt.rcParams['font.sans-serif']
+        
+        # 3. 額外強制覆蓋細部元件，防止圓餅圖、軸標籤漏勾
+        plt.rcParams['mathtext.fontset'] = 'custom'
+        
+        # 建立一個全域字型物件供後續傳參（相容你之前的程式碼）
+        my_font = fm.FontProperties(fname=font_path)
+        font_available = True
+        st.sidebar.success(f"✅ 中文核心字型已成功硬核注入：{font_name}")
+    except Exception as e:
+        plt.rcParams['font.family'] = 'sans-serif'
+        font_available = False
+        st.sidebar.warning(f"⚠️ 字型載入微調中：{e}")
+else:
+    plt.rcParams['font.family'] = 'sans-serif'
+    font_available = False
+    st.sidebar.warning("⚠️ 沒找到 NotoSansCJKtc-Black.otf，請確認 GitHub 根目錄檔名。")
 
-for font in font_candidates:
-    if font in available_fonts:
-        plt.rcParams['font.sans-serif'] = [font]
-        break
-
-# 強制關閉負號破圖問題
+# 強制修正負號問題
 plt.rcParams['axes.unicode_minus'] = False
-
-# 建立一個空物件作為相容性傳遞（不影響後面你剛改好的 my_font 程式碼變數）
-class DummyFont:
-    def copy(self): return self
-    def get_name(self): return 'sans-serif'
-my_font = DummyFont()
-font_available = False # 關閉實體檔案注入，全面改用雲端伺服器原生安全渲染
 
 # =====================================================================
 # 1. 數學模型核心：Heston 模擬、參數校準與組合優化
